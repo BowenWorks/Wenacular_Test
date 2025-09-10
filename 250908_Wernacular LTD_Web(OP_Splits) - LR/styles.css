@@ -1,0 +1,460 @@
+/* ----------------------------
+   Fonts (replace with your files)
+----------------------------- */
+@font-face {
+  font-family: "IvyMode";
+  src: url("fonts/IvyMode-Thin.woff2") format("woff2"),
+       url("fonts/IvyMode-Thin.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IvyMode";
+  src: url("fonts/IvyMode-SemiBold.woff2") format("woff2"),
+       url("fonts/IvyMode-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ----------------------------
+   Root / Resets
+----------------------------- */
+:root{
+  --bg: #ffffff;
+  --ink: #333333;
+  --muted: #666666;
+  --accent: #ffffff;
+  --maxw: 1200px;
+  --pad: clamp(16px, 2vw, 28px);
+  --header-h: 68px;
+  --header-h-compact: 52px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "IvyMode", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+/* Utility */
+.section { padding: calc(var(--pad)*3) 0; }
+
+.section-head {
+  text-align: center;
+}
+h1,h2,h3 { margin: 0 0 0.75rem; letter-spacing: 0.5px; }
+h1 {
+  font-weight: 600;
+  font-size: clamp(48px, 8vw, 96px);
+  line-height: 1.1;
+  color: var(--accent);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+h2 {
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 40px);
+  color: var(--ink);
+}
+h3 {
+  font-weight: 600;
+  font-size: clamp(20px, 2.5vw, 28px);
+  color: var(--ink);
+}
+p {
+  color: var(--muted);
+  max-width: 60ch;
+  margin: 0 auto 1rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+a:hover, a:focus {
+  text-decoration: underline;
+}
+img {
+  max-width: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+/* ----------------------------
+   Header
+----------------------------- */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--pad);
+}
+.header-inner {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--accent);
+  cursor: default;
+  user-select: none;
+}
+.main-nav ul {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex;
+  gap: clamp(18px, 2vw, 32px);
+  align-items: center;
+}
+.main-nav a {
+  font-family: "IvyMode", serif;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  padding: 8px 0;
+  position: relative;
+  color: var(--ink);
+  transition: color 0.3s ease;
+}
+.main-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 100%; bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0.8;
+  transition: right 0.3s ease;
+}
+.main-nav a:hover::after,
+.main-nav a:focus::after {
+  right: 0;
+}
+.main-nav .cta {
+  font-weight: 700;
+  padding: 8px 18px;
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+.main-nav .cta:hover,
+.main-nav .cta:focus {
+  background: var(--accent);
+  color: #333333;
+  transform: translateY(-2px);
+}
+
+/* Hamburger (mobile) */
+.nav-toggle { display: none; }
+.hamburger{
+  display: none;
+  width: 34px; height: 28px; cursor: pointer;
+  position: relative;
+}
+.hamburger span{
+  position: absolute; left: 0; right: 0; height: 3px; background: var(--ink);
+  border-radius: 2px;
+  transform-origin: center; transition: transform .3s ease, top .3s ease, opacity .3s ease;
+}
+.hamburger span:nth-child(1){ top: 5px; }
+.hamburger span:nth-child(2){ top: 13px; }
+.hamburger span:nth-child(3){ top: 21px; }
+.nav-toggle:checked + .hamburger span:nth-child(1){ top: 13px; transform: rotate(45deg); }
+.nav-toggle:checked + .hamburger span:nth-child(2){ opacity: 0; }
+.nav-toggle:checked + .hamburger span:nth-child(3){ top: 13px; transform: rotate(-45deg); }
+
+/* Mobile menu reveal */
+@media (max-width: 860px){
+  .hamburger{ display: inline-block; }
+  .main-nav{
+    position: fixed;
+    inset: var(--header-h) 0 auto 0;
+    transform: translateY(-12px);
+    opacity: 0; pointer-events: none;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: opacity .3s ease, transform .3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 45;
+  }
+  .main-nav ul{ flex-direction: column; align-items: flex-start; padding: 24px var(--pad); gap: 16px; }
+  .nav-toggle:checked ~ .main-nav{
+    opacity: 1; pointer-events: auto; transform: translateY(0);
+  }
+}
+
+/* Reserve space under fixed header */
+main { padding-top: calc(var(--header-h) + 2vh); }
+
+/* ----------------------------
+   Hero Section
+----------------------------- */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Abstract shapes */
+
+/* ----------------------------
+   Projects Grid
+----------------------------- */
+.project-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* fallback for small screens */
+  gap: 0;
+  padding-bottom: 0;
+}
+
+@media (min-width: 860px) {
+  .project-grid {
+    grid-template-columns: repeat(2, 1fr); /* two columns on larger screens */
+  }
+}
+.project-card {
+  display: block;
+  padding: 0;
+  border-radius: 0;
+}
+.project-card img {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  border-radius: 0;
+  display: block;
+  margin: 0;
+  transition: transform 0.5s ease;
+}
+
+.project-card:hover img,
+.project-card:focus img {
+  transform: scale(1.05); /* zoom slightly inside frame */
+}
+/* ----------------------------
+   About Section
+----------------------------- */
+.about .about-inner{
+  padding: 0 var(--pad);
+  text-align: center;
+  color: var(--ink);
+  font-weight: 400;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  max-width: 720px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: revealText 1s ease forwards;
+  animation-delay: 0.3s;
+}
+@keyframes revealText {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ----------------------------
+   Contact Section
+----------------------------- */
+.contact-grid{
+  display: grid;
+  gap: 32px;
+  padding: 0 var(--pad) 3rem;
+}
+@media (min-width: 860px){
+  .contact-grid{
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+.contact-block{
+  border-radius: 20px;
+  padding: calc(var(--pad)*1.5);
+  background: #eeeeee;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.contact-block a{ color: var(--accent); }
+
+.contact-form{
+  border-radius: 20px;
+  padding: calc(var(--pad)*1.5);
+  background: #eeeeee;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: grid;
+  gap: 18px;
+}
+.contact-form label{
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 1rem;
+}
+.contact-form input,
+.contact-form textarea{
+  width: 100%;
+  color: var(--ink);
+  background: #d2d2d2;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  outline-offset: 4px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  resize: vertical;
+  font-family: inherit;
+}
+.contact-form input::placeholder,
+.contact-form textarea::placeholder{
+  color: #ffffff;
+  font-style: italic;
+}
+.contact-form input:focus,
+.contact-form textarea:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  background: #fffde7;
+}
+.contact-form button{
+  justify-self: start;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #333333;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+.contact-form button:hover,
+.contact-form button:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(255, 255, 255, 0.7);
+}
+
+/* ----------------------------
+   Footer
+----------------------------- */
+.site-footer{
+  padding: 60px var(--pad);
+  color: #8a7f71;
+  text-align: center;
+  background: #000000;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ----------------------------
+   Accessibility touches
+----------------------------- */
+:focus{
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ----------------------------
+   Notes:
+   - Light warm theme with playful typography and shapes.
+   - Hero uses subtle floating shapes with animation.
+   - Projects have tilt and shadow bounce on hover.
+   - About text revealed with fade and translate.
+   - Contact form uses rounded inputs with yellow glow on focus.
+   - Header and footer are light and minimal.
+----------------------------- */
+
+/* Point cloud canvas (interactive particles) */
+#pointcloud{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  z-index:1; /* behind hero content */
+  pointer-events:none; /* keep page interactive */
+}
+/* make sure hero content is above the canvas */
+.hero-shapes{ position:relative; z-index:2; }
+
+/* HiDPI crisp dots */
+.point-dot{ }
+
+/* Page Loader */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: transparent; /* show page content behind */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.loader-logo {
+  width: 1800px; /* increased size */
+  height: auto;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: loaderFade 2s ease-in-out forwards;
+}
+
+@keyframes loaderFade {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* ----------------------------
+   Dynamic Cursor Dot
+----------------------------- */
+#cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 110px;
+  height: 110px;
+  background: rgba(255, 255, 255, 0.075); /* was 0.15 */
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  box-shadow: 0 0 20px rgba(255,255,255,0.1), 0 4px 30px rgba(255,255,255,0.1);
+  backdrop-filter: blur(3px);
+  transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease;
+}
