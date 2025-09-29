@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wernacular Architects</title>
+
+<!-- IvyMode Font -->
+<link rel="stylesheet" href="https://use.typekit.net/ufn3fon.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Reset */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: "ivymode", sans-serif;
+    font-weight: 300;
+    color: #222;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  /* Header */
+  header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+    background: #fff;
+    padding: 0 1rem;
+  }
+  .header-left img { width: 70px; display:block; }
+  .header-right nav ul { list-style: none; display:flex; gap:1rem; align-items:center; }
+  .header-right nav a {
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.2rem 0.4rem;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+  }
+  .header-right nav a:hover,
+  .header-right nav a.active {
+    font-weight: 700;
+    border-bottom: 2px solid #000;
+  }
+
+  /* Main split layout */
+  main.split-layout {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+    transition: grid-template-columns 0.5s ease, grid-template-rows 0.5s ease;
+  }
+  main.split-layout.expanded {
+    grid-template-columns: 2fr 3fr;
+  }
+
+  /* Left column */
+  .left-col {
+    background: #000;
+    color: #fff;
+    overflow-y: auto;
+    padding: 2rem 1.5rem;
+    border-right: 1px solid #eee;
+  }
+  .left-col, .left-col * {
+    color: #fff !important;
+  }
+  .left-col::-webkit-scrollbar { width: 0; height: 0; }
+  .left-col { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .hero img { width: 100%; display:block; object-fit:cover; border-radius:8px; margin-bottom:1.5rem; }
+
+  .chapter-title { margin-bottom: 1.5rem; }
+  .chapter-title h1 {
+    font-size: 0.9rem;
+    font-weight: 200;
+    letter-spacing: 0.2em;
+    color: #fff;
+    margin: 0.5rem 0;
+  }
+  .chapter-title .line-top { height:1px; background:#e6e5e4; margin:0.6rem 0; display:block; }
+
+  .item {
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    transition: transform 0.25s ease;
+  }
+  .item:hover { transform: scale(1.01); }
+  .item img {
+    width: 100%;
+    display:block;
+    border-radius:3px;
+    margin-top:0.5rem;
+    filter: grayscale(100%);
+    transition: filter 1.5s ease;
+  }
+  .about-item img, .contact-item img {
+    max-height: 150px;
+    object-fit: cover;
+  }
+  .item:hover img { filter: grayscale(0%); }
+  .item h3 {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: left;
+  }
+  .caption-inline {
+    font-size: 0.75rem;
+    color: #fff;
+    font-weight: 200;
+  }
+
+  .item.active img {
+  filter: grayscale(0%); /* keep image saturated */
+}
+
+  /* Right column */
+  .right-col {
+    background: #fff;
+    color: #000;
+    overflow-y: auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+  }
+  .right-col::-webkit-scrollbar { width: 0; height: 0; }
+  .right-col { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Fade effect */
+  .info-section {
+    max-width: 560px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: none;
+  }
+  /* Fade-in animation for info-section */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .info-section.active {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 1s ease;
+  }
+  .info-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #000;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+    padding-bottom: 0.4rem;
+  }
+  .info-section p, .info-section a {
+    color: #000;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-decoration: none;
+  }
+  .info-section a:hover { color: #000; text-decoration: underline; }
+
+  /* Info-section images: smooth scaling and full width */
+  .info-section img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 3px;
+      padding: 0.8rem 0;
+      transition: all 0.4s ease;
+  }
+
+  /* Allow info-section container to expand fully with smoother scaling */
+  main.split-layout.expanded .right-col .info-section {
+      max-width: 100%;
+      transition: all 0.5s ease;
+  }
+
+  .project-location h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0.3rem 0;
+    color: #000;
+    font-family: "ivymode", "Noto Serif SC", "Songti SC", serif;
+  }
+
+  /* Mobile */
+  @media (max-width:768px){
+    header { height:auto; padding:0.6rem; flex-direction:column; align-items:flex-start; gap:0.4rem; }
+    .header-left img { width:60px; }
+    .header-right nav a { font-size:0.85rem; padding:0.15rem 0.3rem; }
+    main.split-layout { grid-template-columns:1fr; grid-template-rows:8fr 2fr; height:calc(100vh - 60px); margin-top:0; }
+    main.split-layout.expanded { grid-template-rows: 3fr 7fr; }
+    .left-col, .right-col { height:100%; overflow-y:auto; }
+    .left-col { padding:1rem; }
+    .right-col { padding:1rem; }
+    /* Phone aspect: right column full screen */
+    main.split-layout.phone-right {
+      grid-template-rows: 2fr 8fr; /* left smaller, right larger */
+    }
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .left-col {
+    animation: slideDown 1.5s ease forwards;
+  }
+  .right-col {
+    animation: slideUp 1s ease forwards;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <img src="./fonts/LOGO_2.svg" alt="Logo">
+  </div>
+  <div class="header-right">
+    <nav>
+      <ul>
+        <li><a href="#projects" data-target="projects" class="active">PROJECTS</a></li>
+        <li><a href="#about-link" data-target="about-link">ABOUT US</a></li>
+        <li><a href="#contact-link" data-target="contact-link">CONTACT</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="split-layout">
+  <div class="left-col" id="leftCol">
+    <div class="item" data-section="news-section">
+      <span class="line-top"></span>
+      <img src="./img_cover_slide/top_news_1-1.png" alt="News Highlight">
+      <h3>Latest | <span class="caption-inline">Latest updates and highlights from Wernacular</span></h3>
+    </div>
+
+    <div id="projects" class="chapter-title">
+      <span class="line-top"></span>
+      <h1>PROJECTS</h1>
+    </div>
+
+    <div class="item" data-section="project1-section">
+      <img src="./img_cover_slide/Project_01_Cover.png" alt="Impressions and Nomadism">
+      <h3>Impressions and Nomadism | <span class="caption-inline">Installation at London Design Festival - 2025</span></h3>
+    </div>
+
+    <div class="item" data-section="project2-section">
+      <img src="./img_cover_slide/Baihe_Cover.png" alt="Baihe Village">
+      <h3> HOUSE 155  | <span class="caption-inline">Guest House  Beijing - 2024</span></h3>
+    </div>
+
+
+    <div id="about-link" class="chapter-title">
+      <span class="line-top"></span>
+      <h1>AND MORE...</h1>
+      <div class="item about-item">
+        <img src="./img_cover_slide/AboutUS.jpg" alt="About Us">
+        <h3>ABOUT | <span class="caption-inline">Learn more about our studio philosophy</span></h3>
+      </div>
+    </div>
+
+    <div id="contact-link" class="chapter-title">
+      <div class="item contact-item">
+        <img src="./img_cover_slide/Contact.png" alt="Contact">
+        <h3>CONTACT | <span class="caption-inline">Get in touch with us</span></h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-col" id="rightCol">
+    <div id="default-info" class="info-section active">
+      <p>
+        <span style="display:block; font-size:3rem; font-weight:700;">Digital Fabrication</span>
+        <span style="display:block; font-size:1.2rem; margin-bottom:1.5rem;">数字化建造</span>
+        
+        <span style="display:block; font-size:3rem; font-weight:700;">Customisation</span>
+        <span style="display:block; font-size:1.2rem; margin-bottom:1.5rem;">客制化</span>
+        
+        <span style="display:block; font-size:3rem; font-weight:700;">Impression</span>
+        <span style="display:block; font-size:1.2rem;">印象</span>
+      </p>
+    </div>
+
+    <div id="news-section" class="info-section">
+      <h2>Latest</h2>
+      <p>Latest updates and highlights from Wernacular.</p>
+      <img src="./projects/News/01.png" alt="News Image">
+      <img src="./projects/News/02.png" alt="News Image">
+    </div>
+
+    <div id="project1-section" class="info-section">
+      <h2>Impressions and Nomadism</h2>
+      <div class="project-meta" style="margin-top:2rem; font-size:0.9rem; line-height:1.6; color:#000000;">
+        <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:0.8rem;">Installation at London Design Festival - 2025 </h3>
+
+
+        <img src="./projects/LDF/01.png" alt="Impressions and Nomadism Image">
+
+      <h3>Introduction</h3>
+      <p>At this year’s London Design Festival 2025, Wernacular presents a unique furniture project first conceived for Baihe Village in Beijing. The work embodies the studio’s ongoing exploration into how design can capture and carry memory, reinterpreting personal and spatial impressions through digital tools and fabrication.</p>
+      <p style="margin:1rem 0;"></p>
+      <h3>The Concept</h3>
+      <p>Wernacular’s practice is rooted in the intersection of technology, memory, and material culture. By employing digital design and construction methods, the team deconstructs the spatial identity of a specific place—such as a home or village—and reassembles it into the form of furniture.</p>
+      <p>These pieces are not merely functional objects; they serve as vessels of memory. Each carries the intangible essence of a dwelling, refracted into physical form. When their owners relocate, the furniture travels with them—becoming nomadic, migrating across geographies, yet always retaining a trace of the previous home.</p>
+      <p>In an age defined by global mobility, Wernacular asks: Can design become a bridge between memory and belonging?</p>
+      <ol style="padding: 1rem 0;"></ol>
+      <p><strong>Wernacular seeks to explore:</strong></p>
+    <ol style="padding: 1rem 0;">
+        <p>1.  How digital design can translate the uniqueness of a space</p>
+        <p>2.  How furniture can become a continuation of memory and a companion in migration</p>
+        <p>3.  How “dwelling” can retain a sense of personal belonging in today's globally mobile world</p>
+      </ol>
+
+      <img src="./projects/LDF/02.png" alt="Impressions and Nomadism Image">
+
+      <p style="margin:1rem 0;"></p>
+      <h3>A Living Narrative</h3>
+      <p>In October 2024, Wernacular received a commission from a client in Beijing who sought to transform several of his residences in Baihe Village into a multi-building hotel. The design journey began with the gradual transformation of one house, which would serve as the seed for the larger project.</p>
+      <p>During early conversations, the client emphasized the importance of local identity and asked that the design reflect the relationship between the residences and a nearby temple. This temple, though originally built for worship, had been repurposed as a school during his childhood before falling into disuse. For him, the site preserved vivid memories of his formative years.</p>
+      <p>Wernacular took this personal history as a starting point, aiming to use digital design and fabrication to capture and preserve these impressions, allowing the architecture—and now the furniture derived from it—to carry forward a fragment of memory that might otherwise be lost.</p>
+      <p><em>Fig 1.2 Explore the potential applications of this furniture project within the context of potential projects, where it can be utilized to highlight the local character within the forecourt design.</em></p>
+
+      <img src="./projects/LDF/03.png" alt="Impressions and Nomadism Image">
+      <p style="margin:1rem 0;"></p>
+      <h3>Digital Design & Making</h3>
+      <p>The process begins with 3D scanning, capturing the subtle geometries and textures of the original environment. These scans serve as a digital archive of memory, which is then reinterpreted through computational design. To bring these digital impressions into material form, Wernacular employs CNC fabrication, allowing precision-making that bridges virtual data and tactile craft. The result is furniture that is both technologically rigorous and emotionally resonant.</p>
+      <p>“Our goal is to translate the intangible essence of a home into a form that people can live with and carry forward,” says the Wernacular design team. “Furniture becomes a vessel of memory—at once practical and poetic, deeply personal yet universally resonant.”</p>
+
+      <img src="./projects/LDF/04.png" alt="Impressions and Nomadism Image">
+
+
+      <img src="./projects/LDF/05.png" alt="Impressions and Nomadism Image">
+
+      </div>
+
+      <div class="project-meta" style="margin-top:2rem; font-size:0.9rem; line-height:1.6; color:#000000;"></div>
+      <h4>Team Members</h4>
+      <ul>
+        <li>Yaowen Zhang</li>
+        <li>Michaelia (Jingwen) Zheng</li>
+        <li>Bowen Tan</li>
+        <li>Christopher (Hanxiang) Tao</li>
+      </ul>
+
+      <h4>Cooperative Partners</h4>
+      <ul>
+
+        <li>Tai He Ying Chuang</li>
+        <li>Polcrete Ltd UK</li>
+        <li>Xie's Technology Development Co. Ltd</li>
+      </ul>
+
+      <h4>Special Thanks</h4>
+      <ul>
+        <li>Architectural Association - Digital Prototype Lab</li>
+        <li>Steven (Shengtao) Xia</li>
+        <li>Jennifer Yang</li>
+
+      </ul>
+
+    </div>
+
+
+    
+    <div id="project2-section" class="info-section">
+      <h2>HOUSE 155</h2>
+      <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:0.8rem;">  Guest House Beijing - 2024
+      </h3>
+
+
+
+      <img src="./projects/Baihe/01.png" alt="Baihe Village image">
+      <img src="./projects/Baihe/02.png" alt="Baihe Village image">
+      <img src="./projects/Baihe/03.png" alt="Baihe Village image">
+      <img src="./projects/Baihe/04.png" alt="Baihe Village image">
+      <img src="./projects/Baihe/05.png" alt="Baihe Village image">
+      <img src="./projects/Baihe/06.png" alt="Baihe Village image">
+      <img src="./projects/Baihe/07.png" alt="Baihe Village image">
+      <img src="./projects/Baihe/08.png" alt="Baihe Village image">
+      
+              <div class="project-location">
+        <p>Baihe Village 百合村</p>
+        <p>Changping District 昌平区</p>
+        <p>Beijing 北京</p>
+        <p>China 中国</p>
+      </div>
+
+    </div>
+
+
+
+    <div id="about-section" class="info-section">
+      <h2>About</h2>
+      <p style="font-size:1.2rem; margin-bottom:1.5rem;">Wernacular is an architecture and design studio exploring how contemporary expression can meaningfully merge with local culture. Our name (文), blending “W” (from our three founders) and “vernacular,” reflects our mission to redefine contextual design through a personal lens.</p>
+
+      <p style="font-size:1.2rem; margin-bottom:1.5rem;">We approach architecture as a dialogue between memory, culture, and environment, creating work that is distinctive yet rooted in place. Buildings and furniture are more than functional—they carry impressions and memories, connecting people to their surroundings. Inspired by Zumthor, who calls architecture a container of atmosphere, and Pallasmaa, who emphasizes embodied experience, we see place as alive through perception, memory, and movement.</p>
+
+      <p style="font-size:1.2rem; margin-bottom:1.5rem;">Our work revives cultural roots and everyday authenticity. Rather than following universal templates, we create architecture that responds to nature, society, and individual experience, harmonizing with its environment and resonating with human emotion.</p>
+    </div>
+
+    <div id="contact-section" class="info-section">
+      <h2>Contact</h2>
+      <p>Email: <a href="mailto:info@wernacular.com">info@wernacular.com</a></p>
+      <p>Instagram: <a href="https://www.instagram.com/wernacular_/" target="_blank" rel="noopener">@wernacular_</a></p>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  const items = document.querySelectorAll('.item');
+  const sections = document.querySelectorAll('.info-section');
+  const navLinks = document.querySelectorAll('header nav a');
+  const mainLayout = document.querySelector('main.split-layout');
+  const leftCol = document.getElementById('leftCol');
+  const rightCol = document.getElementById('rightCol');
+
+  let lastActive = 'default-info';
+  let lockedExpanded = false;
+
+  // Helper: highlight nav
+  function setActiveNav(id){
+    navLinks.forEach(link=>{
+      const target = link.getAttribute('data-target') || link.getAttribute('href').substring(1);
+      link.classList.toggle('active', target === id);
+    });
+  }
+
+  // Helper: show section + highlight left item
+  function showSection(sectionId){
+    sections.forEach(sec=>{
+      sec.classList.toggle('active', sec.id === sectionId);
+      sec.setAttribute('aria-hidden', sec.id === sectionId ? 'false' : 'true');
+    });
+    lastActive = sectionId;
+
+    // Scroll right column to top when section changes
+    rightCol.scrollTo({ top: 0, behavior: 'smooth' });
+
+    items.forEach(item=>{
+      if(item.dataset.section === sectionId){
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  // CLICK items
+  items.forEach(item=>{
+    item.addEventListener('click', ()=>{
+      let sectionId = null;
+      if(item.classList.contains('about-item')) sectionId = 'about-section';
+      else if(item.classList.contains('contact-item')) sectionId = 'contact-section';
+      else sectionId = item.dataset.section;
+
+      // Toggle collapse if same project clicked
+      if (mainLayout.classList.contains('expanded') && sectionId === lastActive && sectionId.startsWith('project')) {
+        mainLayout.classList.remove('expanded');
+        lockedExpanded = false;
+        showSection('default-info');
+        setActiveNav('projects');
+        return;
+      }
+
+      // Show section
+      showSection(sectionId || 'default-info');
+      setActiveNav(
+        sectionId === 'about-section' ? 'about-link' :
+        sectionId === 'contact-section' ? 'contact-link' : 'projects'
+      );
+
+      // Expand only for projects
+      if(sectionId && sectionId.startsWith('project')){
+        if (window.innerWidth > 768) mainLayout.classList.add('expanded');
+        lockedExpanded = true;
+      } else {
+        if (window.innerWidth > 768) mainLayout.classList.remove('expanded');
+        lockedExpanded = false;
+      }
+    });
+
+    // HOVER items → preview info, don’t expand
+    item.addEventListener('mouseenter', ()=>{
+      let sectionId = null;
+      if(item.classList.contains('about-item')) sectionId = 'about-section';
+      else if(item.classList.contains('contact-item')) sectionId = 'contact-section';
+      else sectionId = item.dataset.section;
+
+      showSection(sectionId || 'default-info');
+      setActiveNav(
+        sectionId === 'about-section' ? 'about-link' :
+        sectionId === 'contact-section' ? 'contact-link' : 'projects'
+      );
+    });
+
+    // LEAVE items → restore last clicked section
+    item.addEventListener('mouseleave', ()=>{
+      showSection(lastActive);
+      if(lastActive === 'about-section') setActiveNav('about-link');
+      else if(lastActive === 'contact-section') setActiveNav('contact-link');
+      else setActiveNav('projects');
+    });
+  });
+
+  // Hover right column → expand temporarily if not locked
+  rightCol.addEventListener('mouseenter', ()=>{
+    if (!lockedExpanded && window.innerWidth > 768) {
+      mainLayout.classList.add('expanded');
+    }
+  });
+
+  // Leaving right column → do nothing (keep state)
+  rightCol.addEventListener('mouseleave', ()=>{});
+
+  // NAV click → scroll + show info
+  navLinks.forEach(link=>{
+    link.addEventListener('click', e=>{
+      e.preventDefault();
+      const targetId = link.getAttribute('data-target') || link.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if(!targetEl) return;
+
+      leftCol.scrollTo({top: targetEl.offsetTop, behavior:'smooth'});
+
+      if(targetId === 'about-link'){
+        showSection('about-section');
+        lockedExpanded = false;
+        if (window.innerWidth > 768) mainLayout.classList.remove('expanded');
+      } 
+      else if(targetId === 'contact-link'){
+        showSection('contact-section');
+        lockedExpanded = false;
+        if (window.innerWidth > 768) mainLayout.classList.remove('expanded');
+      } 
+      else {
+        showSection('default-info');
+        lockedExpanded = false;
+        if (window.innerWidth > 768) mainLayout.classList.remove('expanded');
+      }
+
+      setActiveNav(targetId);
+    });
+  });
+
+  // Phone aspect: toggle full-screen left/right column on click
+  if (window.innerWidth <= 768) {
+    const leftCol = document.getElementById('leftCol');
+    const rightCol = document.getElementById('rightCol');
+    let phoneView = 'left'; // default view
+    const mainSplit = document.querySelector('main.split-layout');
+
+    // Clicking an item image → switch to right column, otherwise toggle back to left
+    leftCol.addEventListener('click', e => {
+      if (e.target.tagName.toLowerCase() === 'img' && e.target.closest('.item')) {
+        mainSplit.classList.add('phone-right');
+        phoneView = 'right';
+      } else {
+        // Click anywhere else in left column → reverse back to larger left column
+        if (mainSplit.classList.contains('phone-right')) {
+          mainSplit.classList.remove('phone-right');
+          phoneView = 'left';
+        }
+      }
+    });
+  }
+})();
+</script>
+
+
+
+
+
+</body>
+</html>
