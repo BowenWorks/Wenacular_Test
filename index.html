@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wernacular Architects</title>
+<meta name="description" content="Wernacular is an architecture and design studio exploring digital fabrication, customisation and impression — merging contemporary expression with local culture.">
+<link rel="icon" type="image/svg+xml" href="./fonts/favicon.svg">
+<meta property="og:title" content="Wernacular Architects">
+<meta property="og:description" content="Architecture and design studio — digital fabrication, customisation, impression.">
+<meta property="og:image" content="./img_cover_slide/Alcova_Cover.jpg">
+<meta property="og:type" content="website">
+
+<!-- IvyMode Font -->
+<link rel="stylesheet" href="https://use.typekit.net/ufn3fon.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Reset */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: "ivymode", sans-serif;
+    font-weight: 300;
+    color: #222;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  /* Header */
+  header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+    background: #fff;
+    padding: 0 1rem;
+  }
+  .header-left img { width: 70px; display:block; }
+  .header-right nav ul { list-style: none; display:flex; gap:1rem; align-items:center; }
+  .header-right nav a {
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.2rem 0.4rem;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+  }
+  .header-right nav a:hover,
+  .header-right nav a.active {
+    font-weight: 700;
+    border-bottom: 2px solid #000;
+  }
+
+  /* Main split layout */
+  main.split-layout {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+    transition: grid-template-columns 0.5s ease, grid-template-rows 0.5s ease;
+  }
+  main.split-layout.expanded {
+    grid-template-columns: 2fr 3fr;
+  }
+
+  /* Left column */
+  .left-col {
+    background: #000;
+    color: #fff;
+    overflow-y: auto;
+    padding: 2rem 1.5rem;
+    border-right: 1px solid #eee;
+  }
+  .left-col, .left-col * {
+    color: #fff !important;
+  }
+  .left-col::-webkit-scrollbar { width: 0; height: 0; }
+  .left-col { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .hero img { width: 100%; display:block; object-fit:cover; border-radius:8px; margin-bottom:1.5rem; }
+
+  .chapter-title { margin-bottom: 1.5rem; }
+  .chapter-title h1 {
+    font-size: 0.9rem;
+    font-weight: 200;
+    letter-spacing: 0.2em;
+    color: #fff;
+    margin: 0.5rem 0;
+  }
+  .chapter-title .line-top { height:1px; background:#e6e5e4; margin:0.6rem 0; display:block; }
+
+  .item {
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    transition: transform 0.25s ease;
+  }
+  .item:hover { transform: scale(1.01); }
+  .item img {
+    width: 100%;
+    display:block;
+    border-radius:3px;
+    margin-top:0.5rem;
+    filter: grayscale(100%);
+    transition: filter 1.5s ease;
+  }
+  .about-item img, .contact-item img {
+    max-height: 150px;
+    object-fit: cover;
+  }
+  .item:hover img { filter: grayscale(0%); }
+  .item h3 {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: left;
+  }
+  .caption-inline {
+    font-size: 0.75rem;
+    color: #fff;
+    font-weight: 200;
+  }
+
+  .item.active img {
+  filter: grayscale(0%); /* keep image saturated */
+}
+
+  /* Hero image with logo overlay (Latest cover) */
+  .hero-wrap { position: relative; }
+  .hero-wrap .hero-logo {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    width: 34%;
+    max-width: 220px;
+    height: auto;
+    filter: none !important;
+    border-radius: 0;
+    margin: 0;
+    pointer-events: none;
+    opacity: 0.95;
+  }
+
+  /* Right column */
+  .right-col {
+    background: #fff;
+    color: #000;
+    overflow-y: auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+  }
+  .right-col::-webkit-scrollbar { width: 0; height: 0; }
+  .right-col { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Fade effect */
+  .info-section {
+    max-width: 560px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: none;
+  }
+  /* Fade-in animation for info-section */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .info-section.active {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 1s ease;
+  }
+  .info-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #000;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+    padding-bottom: 0.4rem;
+  }
+  .info-section p, .info-section a {
+    color: #000;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-decoration: none;
+  }
+  .info-section a:hover { color: #000; text-decoration: underline; }
+
+  /* Info-section images: restrained size (DS+R-style) */
+  .info-section img {
+      width: auto;
+      max-width: 100%;
+      max-height: 58vh;
+      height: auto;
+      display: block;
+      border-radius: 3px;
+      padding: 0.8rem 0;
+      transition: all 0.4s ease;
+  }
+
+  /* Compact uniform image grid for photo sequences */
+  .img-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+      margin: 0.8rem 0;
+  }
+  .img-grid img {
+      width: 100%;
+      max-height: none;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      padding: 0;
+      margin: 0;
+      cursor: zoom-in;
+  }
+  .img-grid img.enlarged {
+      grid-column: 1 / -1;
+      aspect-ratio: auto;
+      object-fit: contain;
+      cursor: zoom-out;
+  }
+
+  /* Three images in one row */
+  .row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      margin: 0.8rem 0;
+  }
+  .row-3 img {
+      width: 100%;
+      max-height: none;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      padding: 0;
+      margin: 0;
+  }
+  @media (max-width:768px){
+      .row-3 { gap: 0.4rem; }
+  }
+
+  /* Expanded right column: generous side margins (all projects) */
+  main.split-layout.expanded .right-col {
+      padding: 2rem 5.5rem;
+  }
+  /* Enlarged left column (default state): matching generous side margins */
+  .left-col, .right-col { transition: padding 0.5s ease; }
+  main.split-layout:not(.expanded) .left-col {
+      padding: 2rem 5.5rem;
+  }
+  /* Wide (near 16:9) screens: both columns keep large margins in every state */
+  @media (min-width: 1200px) and (min-aspect-ratio: 7/5) {
+      .left-col, .right-col { padding: 2.5rem 9rem; }
+      main.split-layout.expanded .left-col,
+      main.split-layout:not(.expanded) .right-col { padding: 2.5rem 6rem; }
+      main.split-layout.expanded .right-col { padding: 2.5rem 9rem; }
+      /* portrait images stay modest */
+      .info-section img { max-height: 44vh; }
+      .stack-slideshow { max-width: 420px; aspect-ratio: 4 / 5; }
+  }
+  @media (max-width:768px){
+      main.split-layout:not(.expanded) .left-col { padding: 1rem; }
+  }
+  main.split-layout.expanded .right-col .info-section {
+      max-width: 100%;
+      transition: all 0.5s ease;
+  }
+  @media (max-width:768px){
+      main.split-layout.expanded .right-col { padding: 1rem; }
+  }
+
+  /* Stacked scroll slideshow (Nomadism Part 2 posters) */
+  .stack-slideshow {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    margin: 0.8rem 0;
+    overflow: hidden;
+    border-radius: 3px;
+  }
+  .stack-slideshow img { max-height: none; }
+  .stack-slideshow img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .stack-slideshow img.active-slide {
+    opacity: 1;
+    transform: scale(1);
+  }
+  /* Minimal segmented bar indicator */
+  .slide-bars {
+    position: absolute;
+    left: 1rem; right: 1rem; bottom: 0.9rem;
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+  }
+  .slide-bars span {
+    flex: 1;
+    height: 2px;
+    background: rgba(0,0,0,0.18);
+    position: relative;
+    overflow: hidden;
+  }
+  .slide-bars span::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #000;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .slide-bars span.done::after { transform: scaleX(1); }
+  .slide-bars span.running::after { animation: barFill 3.5s linear forwards; }
+  @keyframes barFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* About page */
+  .about-dict {
+    border-top: 1px solid #000;
+    border-bottom: 1px solid rgba(0,0,0,0.18);
+    padding: 1.4rem 0;
+    margin: 1.5rem 0 2rem;
+  }
+  .about-word {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .about-ipa {
+    font-size: 0.95rem;
+    font-weight: 200;
+    letter-spacing: 0.05em;
+  }
+  .about-hanzi {
+    font-family: "Noto Serif SC", "Songti SC", serif;
+    font-weight: 400;
+    margin-left: 0.3rem;
+  }
+  .about-def { margin-top: 0.5rem; font-weight: 200; }
+  .about-etym {
+    list-style: none;
+    margin-top: 0.9rem;
+  }
+  .about-etym li {
+    font-size: 0.9rem;
+    font-weight: 200;
+    padding: 0.25rem 0;
+  }
+  .about-manifesto { margin: 0 0 2rem; }
+  .about-pillar {
+    display: flex;
+    gap: 1.2rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.18);
+    transition: padding-left 0.35s ease;
+  }
+  .about-pillar:hover { padding-left: 0.8rem; }
+  .about-num {
+    font-size: 0.75rem;
+    font-weight: 200;
+    letter-spacing: 0.25em;
+    padding-top: 0.35rem;
+  }
+  .about-pillar h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .about-cn {
+    font-family: "Noto Serif SC", "Songti SC", serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    margin-left: 0.4rem;
+  }
+  .about-pillar p {
+    font-size: 0.95rem;
+    font-weight: 200;
+    margin-top: 0.3rem;
+  }
+  .about-quote {
+    font-size: 1.35rem;
+    font-weight: 200;
+    line-height: 1.5;
+    border-left: 1px solid #000;
+    padding: 0.4rem 0 0.4rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .about-quote-src {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    margin-top: 0.7rem;
+  }
+
+  /* Contact page */
+  #contact-section { position: relative; overflow: hidden; }
+  .contact-hero { margin: 1.5rem 0 2.5rem; }
+  .contact-big {
+    display: block;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+  .contact-cn {
+    display: block;
+    font-family: "Noto Serif SC", "Songti SC", serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    margin-top: 0.6rem;
+  }
+  .contact-sub {
+    margin-top: 1.2rem;
+    font-weight: 200;
+    max-width: 34em;
+  }
+  .contact-list {
+    border-top: 1px solid #000;
+    position: relative;
+    z-index: 1;
+  }
+  .contact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 1.1rem 0.6rem;
+    border-bottom: 1px solid rgba(0,0,0,0.18);
+    text-decoration: none;
+    color: #000;
+    transition: background 0.35s ease, color 0.35s ease, padding-left 0.35s ease;
+  }
+  a.contact-row:hover {
+    background: #000;
+    color: #fff !important;
+    padding-left: 1.1rem;
+    text-decoration: none;
+  }
+  a.contact-row:hover .contact-label,
+  a.contact-row:hover .contact-value { color: #fff; }
+  .contact-label {
+    font-size: 0.72rem;
+    font-weight: 200;
+    letter-spacing: 0.3em;
+  }
+  .contact-value {
+    font-size: 1.05rem;
+    font-weight: 500;
+    text-align: right;
+  }
+  .contact-mark {
+    position: absolute;
+    right: -0.05em;
+    bottom: -0.25em;
+    font-family: "Noto Serif SC", "Songti SC", serif;
+    font-size: 11rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.12);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  @media (max-width:768px){
+    .contact-big { font-size: 1.7rem; }
+    .contact-mark { font-size: 7rem; }
+    .contact-row { flex-direction: column; gap: 0.2rem; align-items: flex-start; }
+    .contact-value { text-align: left; }
+  }
+
+  /* Studio timeline (Latest section) */
+  .timeline {
+    margin: 1.5rem 0 2rem;
+    border-left: 1px solid #000;
+    padding-left: 1.4rem;
+  }
+  .timeline-entry {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .timeline-entry:last-child { margin-bottom: 0; }
+  .timeline-entry::before {
+    content: "";
+    position: absolute;
+    left: calc(-1.4rem - 4.5px);
+    top: 0.35rem;
+    width: 8px; height: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+  }
+  .timeline-entry:hover::before, .timeline-entry.now::before { background: #000; }
+  .timeline-year {
+    font-size: 0.75rem;
+    font-weight: 200;
+    letter-spacing: 0.25em;
+    display: block;
+  }
+  .timeline-entry h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0.15rem 0 0.1rem;
+  }
+  .timeline-entry .caption-inline { color: #000; }
+  .timeline-entry img {
+    width: 100%;
+    max-height: 460px;
+    object-fit: cover;
+    object-position: top;
+  }
+  /* Right column enlarged: show Latest images in full, uncropped */
+  main.split-layout.expanded .timeline-entry img {
+    max-height: none;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .project-location h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0.3rem 0;
+    color: #000;
+    font-family: "ivymode", "Noto Serif SC", "Songti SC", serif;
+  }
+
+  /* Phone back button (hidden on desktop) */
+  .phone-back {
+    display: none;
+    position: fixed;
+    bottom: 1.1rem;
+    right: 1.1rem;
+    z-index: 1200;
+    background: #000;
+    color: #fff;
+    border: 1px solid #000;
+    padding: 0.6rem 1.2rem;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .phone-back.show { opacity: 1; pointer-events: auto; }
+
+  /* Mobile */
+  @media (max-width:768px){
+    .phone-back { display: block; }
+    header { height:52px; padding:0 0.8rem; flex-direction:row; align-items:center; }
+    .header-left img { width:50px; }
+    .header-right nav ul { gap:0.5rem; }
+    .header-right nav a { font-size:0.8rem; padding:0.7rem 0.4rem; } /* larger tap target */
+    main.split-layout {
+      grid-template-columns:1fr;
+      grid-template-rows:8fr 2fr;
+      height:calc(100vh - 52px);
+      height:calc(100dvh - 52px);
+      margin-top:52px;
+    }
+    main.split-layout.expanded { grid-template-rows: 3fr 7fr; }
+    .left-col, .right-col { height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+    .left-col { padding:1rem; }
+    .right-col { padding:1rem 1rem 5rem; }
+    /* Phone: reading view — right column nearly full screen */
+    main.split-layout.phone-right {
+      grid-template-rows: 1fr 9fr;
+    }
+    /* Touch: no grayscale wait — show covers in colour */
+    .item img { filter: grayscale(0%); }
+    .info-section img { max-height: 70vh; }
+    .info-section h2 { font-size: 1.6rem; }
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .left-col {
+    animation: slideDown 1.5s ease forwards;
+  }
+  .right-col {
+    animation: slideUp 1s ease forwards;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <img src="./fonts/LOGO_2.svg" alt="Logo">
+  </div>
+  <div class="header-right">
+    <nav>
+      <ul>
+        <li><a href="#projects" data-target="projects" class="active">PROJECTS</a></li>
+        <li><a href="#about-link" data-target="about-link">ABOUT US</a></li>
+        <li><a href="#contact-link" data-target="contact-link">CONTACT</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="split-layout">
+  <div class="left-col" id="leftCol">
+    <div class="item" data-section="news-section">
+      <span class="line-top"></span>
+      <div class="hero-wrap">
+        <img src="./img_cover_slide/Latest_Cover.jpg" alt="Coalescence exhibition at Alcova, Milan Design Week 2026 — photo by Piergiorgio Sorgetti">
+        <img src="./fonts/alcova_logo_white.png" alt="Alcova" class="hero-logo">
+      </div>
+      <h3>Latest | <span class="caption-inline">Latest updates and highlights from Wernacular</span></h3>
+    </div>
+
+    <div id="projects" class="chapter-title">
+      <span class="line-top"></span>
+      <h1>PROJECTS</h1>
+    </div>
+
+    <div class="item" data-section="project4-section">
+      <img src="./img_cover_slide/Alcova_Cover.jpg" alt="Nomadism Part 2 in open landscape — Alcova, Milan Design Week 2026">
+      <h3>Nomadism Part 2 | <span class="caption-inline">Coalescence at Alcova, Milan Design Week - 2026</span></h3>
+    </div>
+
+        <div class="item" data-section="project3-section">
+      <img src="./img_cover_slide/Table_01.jpg" alt="Trace — parametric dining table">
+      <h3>Trace | <span class="caption-inline">Parametric dining table, commission - 2025</span></h3>
+    </div>
+
+
+    <div class="item" data-section="project1-section">
+      <img src="./img_cover_slide/Project_01_Cover.jpg" alt="Impressions and Nomadism">
+      <h3>Impressions and Nomadism | <span class="caption-inline">Installation at London Design Festival - 2025</span></h3>
+    </div>
+
+    <div class="item" data-section="project2-section">
+      <img src="./img_cover_slide/Baihe_Cover.jpg" alt="Baihe Village">
+      <h3> HOUSE 155  | <span class="caption-inline">Guest House  Beijing - 2024</span></h3>
+    </div>
+
+
+    <div id="about-link" class="chapter-title">
+      <span class="line-top"></span>
+      <h1>AND MORE...</h1>
+      <div class="item about-item">
+        <img src="./img_cover_slide/AboutUS.jpg" alt="About Us">
+        <h3>ABOUT | <span class="caption-inline">Learn more about our studio philosophy</span></h3>
+      </div>
+    </div>
+
+    <div id="contact-link" class="chapter-title">
+      <div class="item contact-item">
+        <img src="./img_cover_slide/Contact.jpg" alt="Contact">
+        <h3>CONTACT | <span class="caption-inline">Get in touch with us</span></h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-col" id="rightCol">
+    <div id="default-info" class="info-section active">
+      <p>
+        <span style="display:block; font-size:3rem; font-weight:700;">Digital Fabrication</span>
+        <span style="display:block; font-size:1.2rem; margin-bottom:1.5rem;">数字化建造</span>
+        
+        <span style="display:block; font-size:3rem; font-weight:700;">Customisation</span>
+        <span style="display:block; font-size:1.2rem; margin-bottom:1.5rem;">客制化</span>
+        
+        <span style="display:block; font-size:3rem; font-weight:700;">Impression</span>
+        <span style="display:block; font-size:1.2rem;">印象</span>
+      </p>
+    </div>
+
+    <div id="news-section" class="info-section">
+      <h2>Latest</h2>
+
+      <div class="timeline">
+        <div class="timeline-entry now" data-section="project4-section">
+          <span class="timeline-year">APRIL 2026 · MILAN</span>
+          <h3>Nomadism Part 2</h3>
+          <span class="caption-inline">Coalescence — AA × Alcova, Milan Design Week</span>
+          <p style="margin:0.8rem 0;">Wernacular's latest work was selected for <em>Coalescence</em>, presented by the AA and Alcova at Centro Ospedaliero Militare di Baggio, Milan, 20–26 April 2026 — reconstructing traditional mortise-and-tenon joinery through digital fabrication as a vessel of place-memory.</p>
+          <img src="./projects/Alcova/Alcova_Official.jpg" alt="Coalescence by the Architectural Association — official Alcova exhibition page">
+          <p style="font-size:0.8rem;"><em>Coalescence on the official Alcova website: <a href="https://www.alcova.xyz/exhibitions/milano-2026/coalescence" target="_blank" rel="noopener">alcova.xyz/exhibitions/milano-2026/coalescence</a></em></p>
+        </div>
+
+        <div class="timeline-entry" data-section="project3-section">
+          <span class="timeline-year">NOVEMBER 2025 · COMMISSION</span>
+          <h3>Trace</h3>
+          <span class="caption-inline">Parametric dining table — MDF &amp; cast concrete</span>
+          <img src="./projects/GH_Table/1.jpg" alt="Trace — parametric dining table" loading="lazy">
+        </div>
+
+        <div class="timeline-entry" data-section="project1-section">
+          <span class="timeline-year">SEPTEMBER 2025 · LONDON</span>
+          <h3>Impressions and Nomadism</h3>
+          <span class="caption-inline">Installation at London Design Festival, Bedford Square</span>
+          <img src="./projects/News/LDF_official.jpg" alt="Nomadic Impression on the London Design Festival official programme" loading="lazy">
+          <img src="./projects/News/02.jpg" alt="Dezeen coverage — Nomadic Impression at London Design Festival 2025" loading="lazy">
+        </div>
+
+        <div class="timeline-entry" data-section="project2-section">
+          <span class="timeline-year">2024 · BEIJING</span>
+          <h3>HOUSE 155</h3>
+          <span class="caption-inline">Guest house, Baihe Village, Changping</span>
+          <img src="./projects/Baihe/01.jpg" alt="HOUSE 155 — guest house in Baihe Village" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <div id="project1-section" class="info-section">
+      <h2>Impressions and Nomadism</h2>
+      <div class="project-meta" style="margin-top:2rem; font-size:0.9rem; line-height:1.6; color:#000000;">
+        <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:0.8rem;">Installation at London Design Festival - 2025 </h3>
+
+
+        <img src="./projects/LDF/01.jpg" alt="Impressions and Nomadism Image" loading="lazy">
+
+      <h3>Introduction</h3>
+      <p>At this year’s London Design Festival 2025, Wernacular presents a unique furniture project first conceived for Baihe Village in Beijing. The work embodies the studio’s ongoing exploration into how design can capture and carry memory, reinterpreting personal and spatial impressions through digital tools and fabrication.</p>
+      <p style="margin:1rem 0;"></p>
+      <h3>The Concept</h3>
+      <p>Wernacular’s practice is rooted in the intersection of technology, memory, and material culture. By employing digital design and construction methods, the team deconstructs the spatial identity of a specific place—such as a home or village—and reassembles it into the form of furniture.</p>
+      <p>These pieces are not merely functional objects; they serve as vessels of memory. Each carries the intangible essence of a dwelling, refracted into physical form. When their owners relocate, the furniture travels with them—becoming nomadic, migrating across geographies, yet always retaining a trace of the previous home.</p>
+      <p>In an age defined by global mobility, Wernacular asks: Can design become a bridge between memory and belonging?</p>
+      <ol style="padding: 1rem 0;"></ol>
+      <p><strong>Wernacular seeks to explore:</strong></p>
+    <ol style="padding: 1rem 0;">
+        <p>1.  How digital design can translate the uniqueness of a space</p>
+        <p>2.  How furniture can become a continuation of memory and a companion in migration</p>
+        <p>3.  How “dwelling” can retain a sense of personal belonging in today's globally mobile world</p>
+      </ol>
+
+      <img src="./projects/LDF/02.jpg" alt="Impressions and Nomadism Image" loading="lazy">
+
+      <p style="margin:1rem 0;"></p>
+      <h3>A Living Narrative</h3>
+      <p>In October 2024, Wernacular received a commission from a client in Beijing who sought to transform several of his residences in Baihe Village into a multi-building hotel. The design journey began with the gradual transformation of one house, which would serve as the seed for the larger project.</p>
+      <p>During early conversations, the client emphasized the importance of local identity and asked that the design reflect the relationship between the residences and a nearby temple. This temple, though originally built for worship, had been repurposed as a school during his childhood before falling into disuse. For him, the site preserved vivid memories of his formative years.</p>
+      <p>Wernacular took this personal history as a starting point, aiming to use digital design and fabrication to capture and preserve these impressions, allowing the architecture—and now the furniture derived from it—to carry forward a fragment of memory that might otherwise be lost.</p>
+      <p><em>Fig 1.2 Explore the potential applications of this furniture project within the context of potential projects, where it can be utilized to highlight the local character within the forecourt design.</em></p>
+
+      <img src="./projects/LDF/03.jpg" alt="Impressions and Nomadism Image" loading="lazy">
+      <p style="margin:1rem 0;"></p>
+      <h3>Digital Design & Making</h3>
+      <p>The process begins with 3D scanning, capturing the subtle geometries and textures of the original environment. These scans serve as a digital archive of memory, which is then reinterpreted through computational design. To bring these digital impressions into material form, Wernacular employs CNC fabrication, allowing precision-making that bridges virtual data and tactile craft. The result is furniture that is both technologically rigorous and emotionally resonant.</p>
+      <p>“Our goal is to translate the intangible essence of a home into a form that people can live with and carry forward,” says the Wernacular design team. “Furniture becomes a vessel of memory—at once practical and poetic, deeply personal yet universally resonant.”</p>
+
+      <img src="./projects/LDF/04.png" alt="Impressions and Nomadism Image" loading="lazy">
+
+
+      <img src="./projects/LDF/05.jpg" alt="Impressions and Nomadism Image" loading="lazy">
+
+      </div>
+
+      <div class="project-meta" style="margin-top:2rem; font-size:0.9rem; line-height:1.6; color:#000000;"></div>
+      <h4>Team Members</h4>
+      <ul>
+        <li>Yaowen Zhang</li>
+        <li>Michaelia (Jingwen) Zheng</li>
+        <li>Bowen Tan</li>
+        <li>Christopher (Hanxiang) Tao</li>
+      </ul>
+
+      <h4>Cooperative Partners</h4>
+      <ul>
+
+        <li>Tai He Ying Chuang</li>
+        <li>Polcrete Ltd UK</li>
+        <li>Xie's Technology Development Co. Ltd</li>
+      </ul>
+
+      <h4>Special Thanks</h4>
+      <ul>
+        <li>Architectural Association - Digital Prototype Lab</li>
+        <li>Steven (Shengtao) Xia</li>
+        <li>Jennifer Yang</li>
+
+      </ul>
+
+    </div>
+
+
+    
+    <div id="project2-section" class="info-section">
+      <h2>HOUSE 155</h2>
+      <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:0.8rem;">  Guest House Beijing - 2024
+      </h3>
+
+
+
+      <div class="img-grid">
+        <img src="./projects/Baihe/01.jpg" alt="Baihe Village image" loading="lazy">
+        <img src="./projects/Baihe/02.jpg" alt="Baihe Village image" loading="lazy">
+        <img src="./projects/Baihe/03.jpg" alt="Baihe Village image" loading="lazy">
+        <img src="./projects/Baihe/04.jpg" alt="Baihe Village image" loading="lazy">
+        <img src="./projects/Baihe/05.jpg" alt="Baihe Village image" loading="lazy">
+        <img src="./projects/Baihe/06.png" alt="Baihe Village image" loading="lazy">
+        <img src="./projects/Baihe/07.jpg" alt="Baihe Village image" loading="lazy">
+        <img src="./projects/Baihe/08.jpg" alt="Baihe Village image" loading="lazy">
+      </div>
+      
+              <div class="project-location">
+        <p>Baihe Village 百合村</p>
+        <p>Changping District 昌平区</p>
+        <p>Beijing 北京</p>
+        <p>China 中国</p>
+      </div>
+    </div>
+
+    <div id="project4-section" class="info-section">
+      <h2>Nomadism Part 2</h2>
+      <div class="project-meta" style="margin-top:2rem; font-size:0.9rem; line-height:1.6; color:#000000;">
+        <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:0.8rem;">Coalescence — AA × Alcova, Milan Design Week - 2026</h3>
+
+        <div class="stack-slideshow" id="nomadismSlides">
+          <img src="./projects/Alcova/00_poster.jpg" alt="Wernacular × Alcova poster — studio view" class="active-slide">
+          <img src="./projects/Alcova/06.jpg" alt="Wernacular × Alcova poster — table in interior">
+          <img src="./projects/Alcova/07.jpg" alt="Wernacular × Alcova poster — tabletop detail">
+          <div class="slide-bars"><span></span><span></span><span></span></div>
+        </div>
+
+        <h3>Introduction</h3>
+        <p>Wernacular is honoured that <strong>Nomadism Part 2</strong> was selected for <em>Coalescence</em>, an exhibition presented by the Architectural Association and Alcova at Milan Design Week 2026. Carrying the warmth of Eastern mortise-and-tenon craft, the work continues the enquiry begun with <em>Impressions and Nomadism</em> at London Design Festival 2025 — the studio's ongoing exploration of furniture as a vessel of memory.</p>
+
+        <img src="./projects/Alcova/01.jpg" alt="Nomadism Part 2, studio view" loading="lazy">
+        <p style="margin:1rem 0;"></p>
+
+        <h3>The Concept</h3>
+        <p>Taking the memory of a specific temple as its prototype, the piece reconstructs traditional mortise-and-tenon (榫卯) joinery through digital fabrication — transforming abstract place-memory into a tactile experience that can be perceived by the body.</p>
+
+        <img src="./projects/Alcova/04.jpg" alt="Nomadism Part 2 — interlocking components" loading="lazy">
+
+        <p>As users interact with the furniture, its weight, its texture, and the precise interlocking of its joints naturally evoke the perception of a past ritual space — completing a dialogue across time and place.</p>
+
+        <img src="./projects/Alcova/03.jpg" alt="Nomadism Part 2 in a weathered interior" loading="lazy">
+
+        <p style="margin:1rem 0;"></p>
+        <h3>Exhibition</h3>
+        <p><strong>Coalescence</strong> — presented by the AA and Alcova</p>
+        <p>20 – 26 April 2026, 11:00 – 19:00 (CEST)</p>
+        <p>Alcova Milano (Spaces L3), Centro Ospedaliero Militare</p>
+        <p>7 Via Simone Saint Bon, 20147 Milano</p>
+
+        <img src="./projects/Alcova/05.jpg" alt="Nomadism Part 2 during the exhibition" loading="lazy">
+      </div>
+
+      <div class="project-meta" style="margin-top:2rem; font-size:0.9rem; line-height:1.6; color:#000000;"></div>
+      <h4>Team Members</h4>
+      <ul>
+        <li>Yaowen Zhang</li>
+        <li>Michaelia (Jingwen) Zheng</li>
+        <li>Bowen Tan</li>
+      </ul>
+
+      <h4>Special Thanks — Coalescence Credits</h4>
+      <ul>
+        <li>A project by the Architectural Association, with the support of AA Director Ingrid Schroder</li>
+        <li>Conceived and developed by Christopher Pierce</li>
+        <li>Curated by Nichola Barrington-Leach and Jingyi Deng</li>
+        <li>Exhibition design by NVBL Architects</li>
+        <li>Onsite Coordinator: Ye Jin Lee</li>
+        <li>Production Assistants: Tal Friedman, Or Naeh, Mila Unkovich</li>
+        <li>Press Partner: Sam Talbot</li>
+      </ul>
+    </div>
+
+    <div id="project3-section" class="info-section">
+      <h2>Trace</h2>
+      <div class="project-meta" style="margin-top:2rem; font-size:0.9rem; line-height:1.6; color:#000000;">
+        <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:0.8rem;">Parametric Dining Table — Commission, November 2025</h3>
+
+        <h3>From Architecture to Furniture</h3>
+        <p>We did not begin by designing a shape — we began by defining use. Dining, working, placing, conversing: behaviours are translated into parameters, which in turn generate the boundary and the patterning of the tabletop.</p>
+
+        <img src="./projects/GH_Table/IMG_7772.jpg" alt="Trace — dining and working behaviours mapped on the tabletop" loading="lazy">
+        <img src="./projects/GH_Table/1.jpg" alt="Trace — parametric geometry of the tabletop" loading="lazy">
+        <img src="./projects/GH_Table/2.jpg" alt="Trace — dimensioned drawings, plan and elevation" loading="lazy">
+        <p style="margin:1rem 0;"></p>
+
+        <h3>A Designed Everyday</h3>
+        <p>Every table can be different: dimensions, curvature, and pattern density are recalculated for each space and each user. This is a table generated for a specific person and a specific way of living — not a standard product, but a designed everyday.</p>
+
+        <img src="./projects/GH_Table/IMG_7719.jpg" alt="Trace — CNC toolpaths engraved on the tabletop" loading="lazy">
+        <img src="./projects/GH_Table/IMG_7814.jpg" alt="Trace — working at the table" loading="lazy">
+        <img src="./projects/GH_Table/IMG_7761.jpg" alt="Trace — the table in its kitchen" loading="lazy">
+        <img src="./projects/GH_Table/IMG_7794.jpg" alt="Trace — dining space, everyday life" loading="lazy">
+        <p style="margin:1rem 0;"></p>
+
+        <h3>Making</h3>
+        <p>The MDF top is CNC-machined so that the parameter-generated toolpaths remain visible on its surface. They are at once pattern and a rehearsal of use — the positions of tableware, the sweep of an arm, the zones where objects are placed again and again.</p>
+        <p>The legs are cast in concrete, a stable structural core that carries the light top and its complex curves — so that customisation is realised not only in form, but in structure and material.</p>
+
+        <div class="row-3">
+          <img src="./projects/GH_Table/IMG_6275.jpg" alt="Trace — casting mould for the concrete leg" loading="lazy">
+          <img src="./projects/GH_Table/IMG_6384.jpg" alt="Trace — cast concrete leg, surface texture" loading="lazy">
+          <img src="./projects/GH_Table/IMG_7787.jpg" alt="Trace — inlaid cable groove in use" loading="lazy">
+        </div>
+      </div>
+      
+    </div>
+
+    <div id="about-section" class="info-section">
+      <h2>About</h2>
+
+      <div class="about-dict">
+        <p class="about-word">wer·nac·u·lar <span class="about-ipa">/wəːˈnak.jʊ.lə/</span> <span class="about-hanzi">文</span></p>
+        <p class="about-def"><em>noun.</em> an architecture of place, remembered through a personal lens.</p>
+        <ol class="about-etym">
+          <li><strong>W</strong> — three founders, one studio.</li>
+          <li><strong>vernacular</strong> — the language a place speaks.</li>
+          <li><strong>文</strong> — culture, writing, memory.</li>
+        </ol>
+      </div>
+
+      <div class="about-manifesto">
+        <div class="about-pillar">
+          <span class="about-num">01</span>
+          <div>
+            <h3>Digital Fabrication <span class="about-cn">数字化建造</span></h3>
+            <p>3D scanning, computational design, CNC making — technology in service of memory, not spectacle.</p>
+          </div>
+        </div>
+        <div class="about-pillar">
+          <span class="about-num">02</span>
+          <div>
+            <h3>Customisation <span class="about-cn">客制化</span></h3>
+            <p>Nothing is a standard product. Every piece is recalculated for a specific person, space, and way of living.</p>
+          </div>
+        </div>
+        <div class="about-pillar">
+          <span class="about-num">03</span>
+          <div>
+            <h3>Impression <span class="about-cn">印象</span></h3>
+            <p>Buildings and furniture carry the trace of the places they come from — vessels of memory that travel with their owners.</p>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:1.2rem; margin-bottom:1.5rem;">Wernacular is an architecture and design studio exploring how contemporary expression can meaningfully merge with local culture. We approach architecture as a dialogue between memory, culture, and environment, creating work that is distinctive yet rooted in place.</p>
+
+      <blockquote class="about-quote">Architecture is a container of atmosphere; place is alive through perception, memory, and movement.<span class="about-quote-src">— after Zumthor &amp; Pallasmaa</span></blockquote>
+
+      <p style="font-size:1.2rem; margin-bottom:1.5rem;">Our work revives cultural roots and everyday authenticity. Rather than following universal templates, we create architecture that responds to nature, society, and individual experience — harmonizing with its environment and resonating with human emotion.</p>
+    </div>
+
+    <div id="contact-section" class="info-section">
+      <h2>Contact</h2>
+
+      <div class="contact-hero">
+        <span class="contact-big">Every project begins<br>with a conversation.</span>
+        <span class="contact-cn">每个项目，都始于一场对话</span>
+        <p class="contact-sub">About a place, a memory, and the way you live — we design from use, not shape.</p>
+      </div>
+
+      <div class="contact-list">
+        <a class="contact-row" href="mailto:info@wernacular.com">
+          <span class="contact-label">EMAIL</span>
+          <span class="contact-value">info@wernacular.com</span>
+        </a>
+        <a class="contact-row" href="https://www.instagram.com/wernacular_/" target="_blank" rel="noopener">
+          <span class="contact-label">INSTAGRAM</span>
+          <span class="contact-value">@wernacular_</span>
+        </a>
+        <a class="contact-row" href="mailto:info@wernacular.com?subject=Commission%20Enquiry">
+          <span class="contact-label">COMMISSIONS</span>
+          <span class="contact-value">Tell us about your space 客制化</span>
+        </a>
+        <a class="contact-row" href="mailto:info@wernacular.com?subject=Press%20Enquiry">
+          <span class="contact-label">PRESS</span>
+          <span class="contact-value">Press kit on request</span>
+        </a>
+        <div class="contact-row static">
+          <span class="contact-label">STUDIO</span>
+          <span class="contact-value">London — Beijing 伦敦 — 北京</span>
+        </div>
+      </div>
+
+      <div class="contact-mark" aria-hidden="true">文</div>
+    </div>
+  </div>
+</main>
+
+<button class="phone-back" id="phoneBack" aria-label="Back to project list">↑ BACK 返回</button>
+
+<script>
+(function(){
+  const items = document.querySelectorAll('.item');
+  const sections = document.querySelectorAll('.info-section');
+  const navLinks = document.querySelectorAll('header nav a');
+  const mainLayout = document.querySelector('main.split-layout');
+  const leftCol = document.getElementById('leftCol');
+  const rightCol = document.getElementById('rightCol');
+
+  let lastActive = 'default-info';
+  let lockedExpanded = false;
+
+  // Phone helpers
+  const phoneBack = document.getElementById('phoneBack');
+  const isPhone = () => window.innerWidth <= 768;
+  function setPhoneView(showRight){
+    if (!isPhone()) return;
+    mainLayout.classList.toggle('phone-right', showRight);
+    if (phoneBack) phoneBack.classList.toggle('show', showRight);
+    if (showRight) rightCol.scrollTo({ top: 0 });
+  }
+  if (phoneBack) phoneBack.addEventListener('click', ()=> setPhoneView(false));
+
+  // Helper: highlight nav
+  function setActiveNav(id){
+    navLinks.forEach(link=>{
+      const target = link.getAttribute('data-target') || link.getAttribute('href').substring(1);
+      link.classList.toggle('active', target === id);
+    });
+  }
+
+  // Helper: show section + highlight left item
+  function showSection(sectionId){
+    sections.forEach(sec=>{
+      sec.classList.toggle('active', sec.id === sectionId);
+      sec.setAttribute('aria-hidden', sec.id === sectionId ? 'false' : 'true');
+    });
+    lastActive = sectionId;
+
+    // Scroll right column to top when section changes
+    rightCol.scrollTo({ top: 0, behavior: 'smooth' });
+
+    items.forEach(item=>{
+      if(item.dataset.section === sectionId){
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  // CLICK items
+  items.forEach(item=>{
+    item.addEventListener('click', ()=>{
+      let sectionId = null;
+      if(item.classList.contains('about-item')) sectionId = 'about-section';
+      else if(item.classList.contains('contact-item')) sectionId = 'contact-section';
+      else sectionId = item.dataset.section;
+
+      // Toggle collapse if same project clicked
+      if (mainLayout.classList.contains('expanded') && sectionId === lastActive && sectionId.startsWith('project')) {
+        mainLayout.classList.remove('expanded');
+        lockedExpanded = false;
+        showSection('default-info');
+        setActiveNav('projects');
+        return;
+      }
+
+      // Show section
+      showSection(sectionId || 'default-info');
+      setActiveNav(
+        sectionId === 'about-section' ? 'about-link' :
+        sectionId === 'contact-section' ? 'contact-link' : 'projects'
+      );
+
+      // Expand only for projects
+      if(sectionId && sectionId.startsWith('project')){
+        if (window.innerWidth > 768) mainLayout.classList.add('expanded');
+        lockedExpanded = true;
+      } else {
+        if (window.innerWidth > 768) mainLayout.classList.remove('expanded');
+        lockedExpanded = false;
+      }
+
+      // Phone: any tap on a card opens the reading view
+      setPhoneView(true);
+    });
+
+    // HOVER items → preview info, don’t expand
+    item.addEventListener('mouseenter', ()=>{
+      if (isPhone()) return;
+      let sectionId = null;
+      if(item.classList.contains('about-item')) sectionId = 'about-section';
+      else if(item.classList.contains('contact-item')) sectionId = 'contact-section';
+      else sectionId = item.dataset.section;
+
+      showSection(sectionId || 'default-info');
+      setActiveNav(
+        sectionId === 'about-section' ? 'about-link' :
+        sectionId === 'contact-section' ? 'contact-link' : 'projects'
+      );
+    });
+
+    // LEAVE items → restore last clicked section
+    item.addEventListener('mouseleave', ()=>{
+      if (isPhone()) return;
+      showSection(lastActive);
+      if(lastActive === 'about-section') setActiveNav('about-link');
+      else if(lastActive === 'contact-section') setActiveNav('contact-link');
+      else setActiveNav('projects');
+    });
+  });
+
+  // Image grids: click a thumbnail to enlarge, click again to shrink
+  document.querySelectorAll('.img-grid img').forEach(img=>{
+    img.addEventListener('click', e=>{
+      e.stopPropagation();
+      img.classList.toggle('enlarged');
+    });
+  });
+
+  // Nomadism Part 2: poster stack auto-advances, with segmented bar indicator
+  const nomadismStack = document.getElementById('nomadismSlides');
+  if (nomadismStack) {
+    const slides = nomadismStack.querySelectorAll('img');
+    const bars = nomadismStack.querySelectorAll('.slide-bars span');
+    let idx = 0;
+    function showSlide(i){
+      slides.forEach((img, k)=> img.classList.toggle('active-slide', k === i));
+      bars.forEach((b, k)=>{
+        b.classList.toggle('done', k < i);
+        b.classList.remove('running');
+        if (k === i) { void b.offsetWidth; b.classList.add('running'); }
+      });
+    }
+    showSlide(0);
+    setInterval(()=>{
+      idx = (idx + 1) % slides.length;
+      showSlide(idx);
+    }, 3500);
+  }
+
+  // Hover right column → expand temporarily if not locked
+  rightCol.addEventListener('mouseenter', ()=>{
+    if (!lockedExpanded && window.innerWidth > 768) {
+      mainLayout.classList.add('expanded');
+    }
+  });
+
+  // Leaving right column → do nothing (keep state)
+  rightCol.addEventListener('mouseleave', ()=>{});
+
+  // NAV click → scroll + show info
+  navLinks.forEach(link=>{
+    link.addEventListener('click', e=>{
+      e.preventDefault();
+      const targetId = link.getAttribute('data-target') || link.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if(!targetEl) return;
+
+      leftCol.scrollTo({top: targetEl.offsetTop, behavior:'smooth'});
+
+      if(targetId === 'about-link'){
+        showSection('about-section');
+        lockedExpanded = false;
+        if (window.innerWidth > 768) mainLayout.classList.remove('expanded');
+      } 
+      else if(targetId === 'contact-link'){
+        showSection('contact-section');
+        lockedExpanded = false;
+        if (window.innerWidth > 768) mainLayout.classList.remove('expanded');
+      } 
+      else {
+        showSection('default-info');
+        lockedExpanded = false;
+        if (window.innerWidth > 768) mainLayout.classList.remove('expanded');
+      }
+
+      setActiveNav(targetId);
+
+      // Phone: About / Contact open the reading view; PROJECTS returns to the list
+      if (targetId === 'about-link' || targetId === 'contact-link') {
+        setPhoneView(true);
+      } else {
+        setPhoneView(false);
+      }
+    });
+  });
+})();
+</script>
+
+
+
+
+
+</body>
+</html>
